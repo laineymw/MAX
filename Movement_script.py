@@ -2,7 +2,7 @@ import serial
 import time
 
 # Replace 'your_serial_port' with the actual port where your GRBL controller is connected (e.g., '/dev/ttyUSB0')
-serial_port = 'your_serial_port'
+serial_port = '/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0'
 baud_rate = 115200
 
 # Open the serial port connection
@@ -30,7 +30,7 @@ try:
     home()  # Homing the machine
 
     # Moving to a specific position
-    move_to(50, 50, 0)
+    # move_to(5, 5, 0)
 
 except KeyboardInterrupt:
     print("Script interrupted by user")
