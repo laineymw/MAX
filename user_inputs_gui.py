@@ -1,10 +1,7 @@
-import csv
-import tkinter as tk
-from tkinter import filedialog
 import os
-
 import tkinter as tk
 from tkinter import filedialog
+from datetime import datetime
 
 def select_folder():
     folder_path = filedialog.askdirectory()
@@ -14,19 +11,24 @@ def select_folder():
 def start_experiment():
     experiment_type = experiment_var.get()
     save_folder = folder_entry.get()
+    current_time = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+    
+    # depending on new or existing experiment,
+    # make a new folder directory or day folder
     
     if experiment_type == "New":
         experiment_name = new_experiment_name_entry.get()
-        repeat = repeat_entry.get()
-        condition = condition_entry.get()
-        day = day_entry.get()
-        print(f"New Experiment: {experiment_name}, Repeat: {repeat}, Condition: {condition}, Day: {day}")
-        experiment_folder = os.path.join(save_folder, experiment_name, repeat, condition, day)
+        repeat_val = repeat_entry.get()
+        condition_val = condition_entry.get()
+        plate_id_day_val = plate_id_day_entry_new.get()
+        print(f"New Experiment: {experiment_name}, Repeat: {repeat_val}, Condition: {condition_val}, Plate ID and Day (ex. ID_D#): {plate_id_day_val}")
+        current_folder_name = f"{current_time}--{plate_id_day_val}"
+        experiment_folder = os.path.join(save_folder, experiment_name, repeat_val, condition_val, current_folder_name)
     else:
-        day = day_entry.get()
-        print(f"Existing Experiment: {experiment_name}, Day: {day}")
-        experiment_folder = os.path.join(save_folder, day)
-        
+        plate_id_day_val = plate_id_day_entry_existing.get()
+        print(f"Existing Experiment: Plate ID and Day (ex. ID_D#): {plate_id_day_val}")
+        current_folder_name = f"{current_time}--{plate_id_day_val}"
+        experiment_folder = os.path.join(save_folder, current_folder_name)
     
     # Check if the folder already exists
     folder_exists = True
@@ -70,17 +72,17 @@ condition_label.grid(row=2, column=0, padx=5, pady=5, sticky="e")
 condition_entry = tk.Entry(new_experiment_frame)
 condition_entry.grid(row=2, column=1, padx=5, pady=5)
 
-day_label = tk.Label(new_experiment_frame, text="Day:")
-day_label.grid(row=3, column=0, padx=5, pady=5, sticky="e")
-day_entry = tk.Entry(new_experiment_frame)
-day_entry.grid(row=3, column=1, padx=5, pady=5)
+plate_id_day_label_new = tk.Label(new_experiment_frame, text="Plate ID and Day (ex. ID_D#):")
+plate_id_day_label_new.grid(row=3, column=0, padx=5, pady=5, sticky="e")
+plate_id_day_entry_new = tk.Entry(new_experiment_frame)
+plate_id_day_entry_new.grid(row=3, column=1, padx=5, pady=5)
 
 existing_experiment_frame = tk.Frame(root)
 
-day_label = tk.Label(existing_experiment_frame, text="Day:")
-day_label.grid(row=1, column=0, padx=5, pady=5, sticky="e")
-day_entry = tk.Entry(existing_experiment_frame)
-day_entry.grid(row=1, column=1, padx=5, pady=5)
+plate_id_day_label_existing = tk.Label(existing_experiment_frame, text="Plate ID and Day (ex. ID_D#):")
+plate_id_day_label_existing.grid(row=0, column=0, padx=5, pady=5, sticky="e")
+plate_id_day_entry_existing = tk.Entry(existing_experiment_frame)
+plate_id_day_entry_existing.grid(row=0, column=1, padx=5, pady=5)
 
 folder_label = tk.Label(root, text="Save Folder:")
 folder_label.grid(row=4, column=0, padx=5, pady=5, sticky="e")
