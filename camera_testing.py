@@ -19,11 +19,11 @@ print(settings_array)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH,5472) # set width
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT,3648) # set heigh
 cap.set(cv2.CAP_PROP_FPS,10) # set max fps (max is 4.5fps)
-cap.set(cv2.CAP_PROP_GAIN, 256) # set gain
+cap.set(cv2.CAP_PROP_GAIN, 1000) # set gain
 cap.set(cv2.CAP_PROP_AUTO_WB, 0) # turn off auto white balence
 cap.set(cv2.CAP_PROP_WHITE_BALANCE_BLUE_U, 5000) # set the white balence to some number
 cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0) # turn off auto exposure 
-cap.set(cv2.CAP_PROP_EXPOSURE,-8) # i think this is 2^(exposure)
+cap.set(cv2.CAP_PROP_EXPOSURE,-5) # i think this is 2^(exposure)
 cap.set(cv2.CAP_PROP_CONVERT_RGB,1) # force to return as rgb image
 
 # fourcc = int(cap.get(cv2.CAP_PROP_FOURCC)) # get and decode the codec, should return YUV2 doesnt really matter
@@ -37,7 +37,7 @@ print(settings_array)
 
 clear_camera_image_buffer(cap,N = 10) # get the first N frames and throw them away 
 
-# cap.set(cv2.CAP_PROP_SETTINGS, 1) ############### uncomment this for a graphical interface for setting the settings (its bad though)
+cap.set(cv2.CAP_PROP_SETTINGS, 1) ############### uncomment this for a graphical interface for setting the settings (its bad though)
 # Variables for FPS calculation
 prev_time = time.time()
 start_time = prev_time
@@ -46,7 +46,7 @@ counter = 0
 while True:
 
     ret, frame = cap.read() # reads and return the data from the camera
-    imshow_resize("img",frame,resize_size=[640,480],move_to=[640,1]) # shows the image at the top left of screen
+    imshow_resize("img",frame,resize_size=[640,480],move_to=[1000,1]) # shows the image at the top left of screen
 
     counter += 1
     # every 10 seconds print the frames per second and record an image
