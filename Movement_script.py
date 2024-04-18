@@ -23,11 +23,11 @@ print(settings_array)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH,5472) # set width
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT,3648) # set height
 cap.set(cv2.CAP_PROP_FPS,10) # set max fps (max is 4.5fps)
-cap.set(cv2.CAP_PROP_GAIN, 256) # set gain
+cap.set(cv2.CAP_PROP_GAIN, 1000) # set gain
 cap.set(cv2.CAP_PROP_AUTO_WB, 0) # turn off auto white balance
 cap.set(cv2.CAP_PROP_WHITE_BALANCE_BLUE_U, 5000) # set the white balance to some number
 cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0) # turn off auto exposure 
-cap.set(cv2.CAP_PROP_EXPOSURE,-8) # i think this is 2^(exposure)
+cap.set(cv2.CAP_PROP_EXPOSURE,-5) # i think this is 2^(exposure)
 cap.set(cv2.CAP_PROP_CONVERT_RGB,1) # force to return as RGB image
 
 # Uncomment the following line for a graphical interface for setting the settings (it's not recommended)
@@ -95,17 +95,34 @@ try:
 
     # change this depending on what plate you are using
     positions = read_positions_from_csv('settings_terasaki_positions.csv')
-    
-    for position in positions:
-        time.sleep(0.2) # give the user time to close or turn off lights and leave
+    print("Close door. Imaging will begin in 5 seconds.")
+    time.sleep(5) # give the user time to close or turn off lights and leave
+        
+    for idx,position in enumerate(positions):
+        
         #move_to_position(position)  # Move to each position
         move_to_position(position[:3])
 
+        if idx == 0:
+            time.sleep(10)
+        else:
+            time.sleep(2)
+        
         for i in range(1,4):  # need to take 3 images per well  
             ret, frame = cap.read()  # Read frame from camera
+            time.sleep(0.2)
+            if not ret or frame is None:
+                print(f"Error: Failed to capture image for {position[3]}_{i:03d}")
+                continue  # Skip saving this frame
+            
             image_name = f"{position[3]}_{i:03d}.png"  # Format the image name
             image_path = os.path.join(experiment_folder, image_name)
-            cv2.imwrite(image_path, frame)  # Save image  
+            
+            if cv2.imwrite(image_path, frame):
+                print(f"Saved: {image_name}")
+            else:
+                print(f"Error: Failed to save {image_name}")
+            #cv2.imwrite(image_path, frame)  # Save image  
     
     print("Plate imaging complete. Please turn off light source.")  
     home()
